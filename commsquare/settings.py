@@ -36,7 +36,8 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'app'
+    'KPI1',
+    'KPI2',
 ]
 
 MIDDLEWARE = [
