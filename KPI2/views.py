@@ -1,29 +1,9 @@
-import uuid
-
 from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework.views import APIView
 
 from KPI2.forms import GetKPI2ValidationForm
 from KPI2.models import KPI2
-
-
-def reset_KPIS2():
-    KPI2.objects.all().delete()
-    KPI2(
-        cell_id=uuid.uuid4(),
-        interval_end_timestamp=1668885266915,
-        interval_start_timestamp=1668885266920,
-        number_of_unique_users=8,
-        interval='1-hour'
-    ).save()
-    KPI2(
-        cell_id=uuid.uuid4(),
-        interval_end_timestamp=1768885266915,
-        interval_start_timestamp=1768885266915,
-        number_of_unique_users=12,
-        interval='5-minute'
-    ).save()
 
 
 def kpi2_model_to_json(kpi2: KPI2) -> dict:
@@ -37,7 +17,6 @@ def kpi2_model_to_json(kpi2: KPI2) -> dict:
 
 
 class KPI2View(APIView):
-    reset_KPIS2()
     @staticmethod
     def get(request: Request) -> Response:
         form = GetKPI2ValidationForm(request.GET)

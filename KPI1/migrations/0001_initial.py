@@ -15,11 +15,11 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='KPI1',
             fields=[
-                ('interval_start_timestamp', models.DateTimeField(blank=True, null=True)),
-                ('interval_end_timestamp', models.DateTimeField(blank=True, null=True)),
+                ('interval_start_timestamp', models.FloatField(blank=True, null=True)),
+                ('interval_end_timestamp', models.FloatField(blank=True, null=True)),
                 ('service_id', models.IntegerField(blank=True, null=True)),
                 ('total_bytes', models.IntegerField(default=0)),
-                ('interval', models.CharField(blank=True, choices=[('1H', '1-hour'), ('5M', '5-minute')], max_length=2, null=True)),
+                ('interval', models.CharField(blank=True, choices=[('1-hour', 'One Hour'), ('5-minutes', 'Five Minute')], max_length=10, null=True)),
                 ('id', models.UUIDField(default=uuid.uuid4, primary_key=True, serialize=False)),
             ],
         ),

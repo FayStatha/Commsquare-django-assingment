@@ -6,24 +6,6 @@ from KPI1.forms import GetKPI1ValidationForm
 from KPI1.models import KPI1
 
 
-def reset_KPIS1():
-    KPI1.objects.all().delete()
-    KPI1(
-        service_id=1,
-        interval_end_timestamp=1668885266915,
-        interval_start_timestamp=1668885266920,
-        total_bytes=8,
-        interval='1-hour'
-    ).save()
-    KPI1(
-        service_id=2,
-        interval_end_timestamp=1768885266915,
-        interval_start_timestamp=1768885266915,
-        total_bytes=2,
-        interval='5-minutes'
-    ).save()
-
-
 def kpi1_model_to_json(kpi1: KPI1) -> dict:
     return {
         'service_id': kpi1.service_id,
@@ -36,8 +18,6 @@ def kpi1_model_to_json(kpi1: KPI1) -> dict:
 
 
 class KPI1View(APIView):
-    reset_KPIS1()
-
     @staticmethod
     def get(request: Request) -> Response:
         form = GetKPI1ValidationForm(request.GET)
