@@ -1,9 +1,10 @@
 import datetime
 
-from django.http import HttpResponseBadRequest
 from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework.views import APIView
+
+from KPI1.forms import GetKPI1ValidationForm
 from KPI1.models import KPI1
 
 
@@ -40,26 +41,35 @@ class KPI1View(APIView):
     def get(request: Request) -> Response:
         create_KPIS()
 
-        query = KPI1.objects
+        form = GetKPI1ValidationForm(request.GET)
+        if not form.is_valid():
+            return Response(
+                status=400,
+                data=f'Invalid query params values, error: {dict(form.errors)}'
+            )
 
-        service_id = request.GET.get('service_id')
-        total_bytes = request.GET.get('total_bytes')
-        interval = request.GET.get('interval')
-        interval_start_timestamp = request.GET.get('interval_start_timestamp')
-        interval_end_timestamp = request.GET.get('interval_end_timestamp')
+        query = KPI1.objects
+        query_params = form.clean()
 
         try:
-            if service_id:
-                query = query.filter(service_id=service_id)
-            if total_bytes:
-                query = query.filter(total_bytes=total_bytes)
-            if interval:
-                query = query.filter(interval=interval)
-            if interval_start_timestamp:
-                query.filter(interval_start_timestamp=interval_start_timestamp)
-            if interval_end_timestamp:
-                query.filter(interval_end_timestamp=interval_end_timestamp)
+            if query_params['service_id']:
+                query = query.filter(service_id=query_params['service_id'])
+            if query_params['total_bytes']:
+                query = query.filter(total_bytes=query_params['total_bytes'])
+            if query_params['interval']:
+                query = query.filter(interval=query_params['interval'])
+            if query_params['interval_start_timestamp_ge']:
+                query.filter(interval_start_timestamp__gte=query_params['interval_start_timestamp_ge'])
+            if query_params['interval_start_timestamp_le']:
+                query.filter(interval_start_timestamp__lte=query_params['interval_start_timestamp_le'])
+            if query_params['interval_end_timestamp_ge']:
+                query.filter(interval_end_timestamp__gte=query_params['interval_end_timestamp_ge'])
+            if query_params['interval_end_timestamp_le']:
+                query.filter(interval_end_timestamp__lte=query_params['interval_end_timestamp_le'])
 
             return Response([kpi1_model_to_json(kpi1) for kpi1 in query.all()])
-        except Exception as e:
-            raise HttpResponseBadRequest
+        except Exception:
+            return Response(
+                status=500,
+                data='Something went wrong. Try again later!'
+            )
