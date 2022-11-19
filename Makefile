@@ -14,5 +14,5 @@ venv:
 	source venv/bin/activate && pip3 install -r requirements.txt
 
 run:
-	docker compose up
-	#docker-compose --project-name $(DOCKER_SERVER_IMAGE_TAG) up -d --force-recreate --no-deps app
+	source venv/bin/activate && python3 manage.py makemigrations && python3 manage.py migrate
+	source venv/bin/activate && python3 manage.py runserver
