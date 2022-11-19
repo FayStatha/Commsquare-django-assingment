@@ -6,10 +6,10 @@ from commsquare.models import Interval
 class GetKPI2ValidationForm(forms.Form):
     cell_id = forms.UUIDField(required=False)
     number_of_unique_users = forms.IntegerField(required=False)
-    interval_start_timestamp_ge = forms.DateTimeField(required=False)
-    interval_start_timestamp_le = forms.DateTimeField(required=False)
-    interval_end_timestamp_ge = forms.DateTimeField(required=False)
-    interval_end_timestamp_le = forms.DateTimeField(required=False)
+    interval_start_timestamp_ge = forms.FloatField(required=False)
+    interval_start_timestamp_le = forms.FloatField(required=False)
+    interval_end_timestamp_ge = forms.FloatField(required=False)
+    interval_end_timestamp_le = forms.FloatField(required=False)
     interval = forms.ChoiceField(
         choices=Interval.choices,
         required=False,

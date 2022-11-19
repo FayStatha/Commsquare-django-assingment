@@ -1,41 +1,45 @@
-import datetime
 import uuid
 
-import pytz
 from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework.views import APIView
 
-from commsquare.helpers import unix_time_millis_from_datetime
 from KPI2.forms import GetKPI2ValidationForm
 from KPI2.models import KPI2
 
 
-def create_KPIS2():
+def reset_KPIS2():
+    KPI2.objects.all().delete()
     KPI2(
         cell_id=uuid.uuid4(),
-        interval_end_timestamp=datetime.datetime.now(pytz.UTC),
-        interval_start_timestamp=datetime.datetime.now(pytz.UTC),
+        interval_end_timestamp=1668885266915,
+        interval_start_timestamp=1668885266920,
         number_of_unique_users=8,
         interval='1-hour'
+    ).save()
+    KPI2(
+        cell_id=uuid.uuid4(),
+        interval_end_timestamp=1768885266915,
+        interval_start_timestamp=1768885266915,
+        number_of_unique_users=12,
+        interval='5-minute'
     ).save()
 
 
 def kpi2_model_to_json(kpi2: KPI2) -> dict:
     return {
         'cell_id': kpi2.cell_id,
-        'interval_start_timestamp': unix_time_millis_from_datetime(kpi2.interval_start_timestamp),
-        'interval_end_timestamp': unix_time_millis_from_datetime(kpi2.interval_end_timestamp),
+        'interval_start_timestamp': kpi2.interval_start_timestamp,
+        'interval_end_timestamp': kpi2.interval_end_timestamp,
         'number_of_unique_users': kpi2.number_of_unique_users,
         'interval': kpi2.interval,
     }
 
 
 class KPI2View(APIView):
+    reset_KPIS2()
     @staticmethod
     def get(request: Request) -> Response:
-        create_KPIS2()
-
         form = GetKPI2ValidationForm(request.GET)
         if not form.is_valid():
             return Response(
@@ -54,15 +58,18 @@ class KPI2View(APIView):
             if query_params['interval']:
                 query = query.filter(interval=query_params['interval'])
             if query_params['interval_start_timestamp_ge']:
-                query.filter(interval_start_timestamp__gte=query_params['interval_start_timestamp_ge'])
+                query = query.filter(interval_start_timestamp__gte=query_params['interval_start_timestamp_ge'])
             if query_params['interval_start_timestamp_le']:
-                query.filter(interval_start_timestamp__lte=query_params['interval_start_timestamp_le'])
+                query = query.filter(interval_start_timestamp__lte=query_params['interval_start_timestamp_le'])
             if query_params['interval_end_timestamp_ge']:
-                query.filter(interval_end_timestamp__gte=query_params['interval_end_timestamp_ge'])
+                query = query.filter(interval_end_timestamp__gte=query_params['interval_end_timestamp_ge'])
             if query_params['interval_end_timestamp_le']:
-                query.filter(interval_end_timestamp__lte=query_params['interval_end_timestamp_le'])
+                query = query.filter(interval_end_timestamp__lte=query_params['interval_end_timestamp_le'])
 
-            return Response([kpi2_model_to_json(kpi2) for kpi2 in query.all()])
+            return Response(
+                status=200,
+                data=[kpi2_model_to_json(kpi2) for kpi2 in query.all()]
+            )
         except Exception:
             return Response(
                 status=500,
