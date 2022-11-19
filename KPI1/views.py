@@ -1,25 +1,27 @@
 import datetime
 
+import pytz
 from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework.views import APIView
 
 from KPI1.forms import GetKPI1ValidationForm
 from KPI1.models import KPI1
+from commsquare.helpers import unix_time_millis_from_datetime
 
 
 def create_KPIS():
     KPI1(
         service_id=1,
-        interval_end_timestamp=datetime.datetime.now(),
-        interval_start_timestamp=datetime.datetime.now(),
+        interval_end_timestamp=unix_time_millis_from_datetime(datetime.datetime.now(pytz.UTC)),
+        interval_start_timestamp=unix_time_millis_from_datetime(datetime.datetime.now(pytz.UTC)),
         total_bytes=8,
         interval='1-hour'
     ).save()
     KPI1(
         service_id=2,
-        interval_end_timestamp=datetime.datetime.now(),
-        interval_start_timestamp=datetime.datetime.now(),
+        interval_end_timestamp=unix_time_millis_from_datetime(datetime.datetime.now(pytz.UTC)),
+        interval_start_timestamp=unix_time_millis_from_datetime(datetime.datetime.now(pytz.UTC)),
         total_bytes=2,
         interval='5-minutes'
     ).save()

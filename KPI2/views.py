@@ -1,10 +1,12 @@
 import datetime
 import uuid
 
+import pytz
 from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework.views import APIView
 
+from commsquare.helpers import unix_time_millis_from_datetime
 from KPI2.forms import GetKPI2ValidationForm
 from KPI2.models import KPI2
 
@@ -12,18 +14,18 @@ from KPI2.models import KPI2
 def create_KPIS2():
     KPI2(
         cell_id=uuid.uuid4(),
-        interval_end_timestamp=datetime.datetime.now(),
-        interval_start_timestamp=datetime.datetime.now(),
+        interval_end_timestamp=datetime.datetime.now(pytz.UTC),
+        interval_start_timestamp=datetime.datetime.now(pytz.UTC),
         number_of_unique_users=8,
-        interval='1H'
+        interval='1-hour'
     ).save()
 
 
 def kpi2_model_to_json(kpi2: KPI2) -> dict:
     return {
         'cell_id': kpi2.cell_id,
-        'interval_start_timestamp': kpi2.interval_start_timestamp,
-        'interval_end_timestamp': kpi2.interval_end_timestamp,
+        'interval_start_timestamp': unix_time_millis_from_datetime(kpi2.interval_start_timestamp),
+        'interval_end_timestamp': unix_time_millis_from_datetime(kpi2.interval_end_timestamp),
         'number_of_unique_users': kpi2.number_of_unique_users,
         'interval': kpi2.interval,
     }
