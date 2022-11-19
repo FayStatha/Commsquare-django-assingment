@@ -1,3 +1,5 @@
+import uuid
+
 from django.db import models
 
 from commsquare.models import Interval
@@ -6,7 +8,7 @@ from commsquare.models import Interval
 class KPI1(models.Model):
     interval_start_timestamp = models.DateTimeField(blank=True, null=True)
     interval_end_timestamp = models.DateTimeField(blank=True, null=True)
-    service_id = models.AutoField(primary_key=True, default=0)
+    service_id = models.IntegerField(blank=True, null=True)
     total_bytes = models.IntegerField(default=0)
     interval = models.CharField(
         max_length=2,
@@ -14,3 +16,4 @@ class KPI1(models.Model):
         blank=True,
         null=True
     )
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
