@@ -13,5 +13,8 @@ Documentation can be found [here](Documentation.md)
 
 ```
 make venv
-make run
 ```
+
+### Run
+
+`make run`
