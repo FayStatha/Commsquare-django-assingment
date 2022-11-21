@@ -5,7 +5,9 @@ Documentation can be found [here](Documentation.md)
 
 ## Run the server as a docker container
 
-`docker-compose up`
+```
+docker-compose up
+```
 
 ## Run the server locally
 
@@ -13,5 +15,10 @@ Documentation can be found [here](Documentation.md)
 
 ```
 make venv
-make run
 ```
+
+### Run
+
+```
+make run
+````
